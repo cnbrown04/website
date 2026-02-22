@@ -1,6 +1,7 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { Github, Linkedin, Mail } from "lucide-react";
-import type { ReactNode } from "react";
+import { motion } from "motion/react";
+import { type ReactNode, useState } from "react";
 import { Signature } from "@/components/signature";
 
 export const Route = createFileRoute("/")({ component: App });
@@ -81,23 +82,69 @@ const companies = [
 ] as const;
 
 const connectLinks = [
-	{ href: "mailto:hello@example.com", label: "Mail", icon: Mail },
-	{ href: "https://github.com", label: "GitHub", icon: Github },
-	{ href: "https://linkedin.com", label: "LinkedIn", icon: Linkedin },
+	{ href: "mailto:caleb@cronarch.com", label: "Mail", icon: Mail },
+	{ href: "https://github.com/cnbrown04", label: "GitHub", icon: Github },
+	{
+		href: "https://linkedin.com/in/cnbrown04",
+		label: "LinkedIn",
+		icon: Linkedin,
+	},
 ] as const;
 
 const projects = [
 	{
-		title: "Project One",
-		description: "Short description of the project and what you built.",
-		href: "#",
+		title: "EAGLE Platform",
+		description:
+			"Current ongoing project with the RFID Lab at Auburn University to support Fortune 500 companies audit, track and manage their RFID assets.",
+		href: "https://eagle.rfidlab.org",
+		image: "/projects/eagle.png",
 	},
 	{
-		title: "Project Two",
-		description: "Another project with tech stack or outcome in one line.",
-		href: "#",
+		title: "Cronarch",
+		description: "Software contracting company founded in 2025 to provide software development and consulting services.",
+		href: "https://cronarch.com",
+		image: "/projects/cronarch-web.png",
 	},
 ] as const;
+
+function ProjectCard({ project }: { project: (typeof projects)[number] }) {
+	const [hovered, setHovered] = useState(false);
+	const { title, description, href, image } = project;
+
+	return (
+		<li>
+			<a
+				href={href}
+				className="block touch-manipulation overflow-hidden rounded-lg border border-border bg-background transition-[box-shadow] duration-300 hover:shadow-md"
+				onMouseEnter={() => setHovered(true)}
+				onMouseLeave={() => setHovered(false)}
+			>
+				{image && (
+					<motion.div
+						initial={false}
+						animate={{ height: hovered ? "auto" : 0 }}
+						transition={{
+							type: "tween",
+							duration: 0.3,
+							ease: [0.4, 0, 0.2, 1],
+						}}
+						className="overflow-hidden"
+					>
+						<div className="aspect-video w-full">
+							<img src={image} alt="" className="h-full w-full object-cover" />
+						</div>
+					</motion.div>
+				)}
+				<div className="px-4 py-3 transition-colors hover:bg-muted/50">
+					<span className="font-medium text-foreground hover:underline">
+						{title}
+					</span>
+					<p className="text-muted-foreground mt-1 text-sm">{description}</p>
+				</div>
+			</a>
+		</li>
+	);
+}
 
 function App() {
 	return (
@@ -152,20 +199,8 @@ function App() {
 						Work
 					</h2>
 					<ul className="flex flex-col gap-4">
-						{projects.map(({ title, description, href }) => (
-							<li key={title}>
-								<a
-									href={href}
-									className="group block rounded-lg border border-border bg-background px-4 py-3 transition-colors hover:bg-muted/50"
-								>
-									<span className="font-medium text-foreground group-hover:underline">
-										{title}
-									</span>
-									<p className="text-muted-foreground mt-1 text-sm">
-										{description}
-									</p>
-								</a>
-							</li>
+						{projects.map((project) => (
+							<ProjectCard key={project.title} project={project} />
 						))}
 					</ul>
 				</section>
