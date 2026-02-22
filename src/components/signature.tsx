@@ -27,6 +27,8 @@ const drawVariant: Variants = {
 
 export const Signature = ({ className, ...props }: SVGMotionProps<SVGSVGElement>) => (
   <motion.svg
+    aria-label="Signature"
+    role="img"
     // Check your Inkscape viewBox! If it's different, update these 4 numbers.
     viewBox="0 0 1000 400"
     fill="none"
@@ -41,7 +43,7 @@ export const Signature = ({ className, ...props }: SVGMotionProps<SVGSVGElement>
   >
     {PATHS.map((d, i) => (
       <motion.path
-        key={i}
+        key={`signature-path-${i}-${d}`}
         d={d}
         custom={i}
         variants={drawVariant}
