@@ -1,4 +1,4 @@
-import { createFileRoute } from "@tanstack/react-router";
+import { createFileRoute, Link } from "@tanstack/react-router";
 import { Github, Linkedin, Mail } from "lucide-react";
 import { motion } from "motion/react";
 import { type ReactNode, useState } from "react";
@@ -191,6 +191,11 @@ function App() {
 								</a>
 							</span>
 						))}
+					</p>
+					<p className="text-muted-foreground mt-4">
+						<Link to="/blog" className="text-foreground hover:underline">
+							Blog
+						</Link>
 					</p>
 				</section>
 

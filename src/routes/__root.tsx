@@ -1,8 +1,15 @@
+import { NavBar } from "@/components/ui/tubelight-navbar";
 import { TanStackDevtools } from "@tanstack/react-devtools";
 import { createRootRoute, HeadContent, Scripts } from "@tanstack/react-router";
 import { TanStackRouterDevtoolsPanel } from "@tanstack/react-router-devtools";
+import { BookOpen, Home } from "lucide-react";
 
 import appCss from "../styles/app.css?url";
+
+const navItems = [
+	{ name: "Home", url: "/", icon: Home },
+	{ name: "Blog", url: "/blog", icon: BookOpen },
+];
 
 export const Route = createRootRoute({
 	head: () => ({
@@ -34,8 +41,9 @@ function RootDocument({ children }: { children: React.ReactNode }) {
 			<head>
 				<HeadContent />
 			</head>
-			<body>
+			<body className="min-h-screen bg-stone-50 pb-20">
 				{children}
+				<NavBar items={navItems} />
 				<TanStackDevtools
 					config={{
 						position: "bottom-right",

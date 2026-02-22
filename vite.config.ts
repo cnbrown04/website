@@ -1,3 +1,6 @@
+import mdx from "@mdx-js/rollup";
+import rehypePrism from "rehype-prism-plus";
+import remarkFrontmatter from "remark-frontmatter";
 import tailwindcss from "@tailwindcss/vite";
 import { devtools } from "@tanstack/devtools-vite";
 import { tanstackStart } from "@tanstack/react-start/plugin/vite";
@@ -10,7 +13,14 @@ const config = defineConfig({
 		devtools(),
 		tsconfigPaths({ projects: ["./tsconfig.json"] }),
 		tanstackStart(),
-		viteReact(),
+		{
+			enforce: "pre",
+			...mdx({
+				remarkPlugins: [remarkFrontmatter],
+				rehypePlugins: [[rehypePrism, { ignoreMissing: true }]],
+			}),
+		},
+		viteReact({ include: /\.(jsx|js|tsx|ts|mdx|md)$/ }),
 		tailwindcss(),
 	],
 });

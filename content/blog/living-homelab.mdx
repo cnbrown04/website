@@ -1,0 +1,52 @@
+---
+title: Living Homelab Post
+date: 2025-02-21
+description: A consistently updated post on what im running, and how im running it.
+---
+
+I'm going to try to keep this updated with most of my homelab documentation, no promises.
+If I do anything cool I'll try to write another blog post on it and link it here instead.
+
+<div style={{ display: 'flex', flexWrap: 'wrap', alignItems: 'flex-start', gap: '1.25rem', margin: '2rem 0' }}>
+  <div style={{ width: '300px', flexShrink: 0 }}>
+    <img src="/blog/living-homelab/rack-feb-2026.png" alt="Rack February 2026" style={{ width: '100%', borderRadius: '8px', display: 'block', boxShadow: '0 1px 3px rgba(0,0,0,0.08)' }} />
+  </div>
+  <div style={{ flex: '1', minWidth: '200px', paddingTop: '1.5rem' }}>
+    <ul style={{ margin: 0, padding: 0, listStyle: 'none' }}>
+      <li style={{ padding: '0.75rem 0', borderBottom: '1px solid #e7e5e4', display: 'flex', alignItems: 'baseline', gap: '0.5rem' }}>
+        <span style={{ fontWeight: 600, color: '#1c1917', minWidth: '1.25rem' }}>1</span>
+        <span><strong style={{ color: '#1c1917' }}>UniFi Dream Machine Pro.</strong> Gateway, routing, UniFi controller.</span>
+      </li>
+      <li style={{ padding: '0.75rem 0', borderBottom: '1px solid #e7e5e4', display: 'flex', alignItems: 'baseline', gap: '0.5rem' }}>
+        <span style={{ fontWeight: 600, color: '#1c1917', minWidth: '1.25rem' }}>2</span>
+        <span><strong style={{ color: '#1c1917' }}>24-port patch panel.</strong> Cable management.</span>
+      </li>
+      <li style={{ padding: '0.75rem 0', borderBottom: '1px solid #e7e5e4', display: 'flex', alignItems: 'baseline', gap: '0.5rem' }}>
+        <span style={{ fontWeight: 600, color: '#1c1917', minWidth: '1.25rem' }}>3</span>
+        <span><strong style={{ color: '#1c1917' }}>Brocade ICX6610-48.</strong> 48-port switch. 8 SFP+ and four QSFP+.</span>
+      </li>
+      <li style={{ padding: '0.75rem 0', borderBottom: '1px solid #e7e5e4', display: 'flex', alignItems: 'baseline', gap: '0.5rem' }}>
+        <span style={{ fontWeight: 600, color: '#1c1917', minWidth: '1.25rem' }}>4</span>
+        <span><strong style={{ color: '#1c1917' }}>Dell PowerEdge R740.</strong> Dual Xeon Gold 4110, 64 GB RAM.</span>
+      </li>
+    </ul>
+  </div>
+</div>
+
+## How traffic gets in
+
+Everything from the internet hits one place first: a RackNerd VPS. That box keeps a WireGuard tunnel back into the lab and runs Nginx Proxy Manager, so all the SSL and routing for `*.calebbrown.dev` and `*.cronarch.com` happens there. Behind that, the internal network is 10.0.1.0/24. So in practice: gateway on the VPS, then reverse proxy into the homelab.
+
+## The two hosts
+
+**Atlas** is the entrance node (an ASRock DeskMini 110, i5-7600, 16 GB RAM). It runs Proxmox and sits at the edge. On it you get the Tailscale exit node for getting back into the hypervisors, and the WireGuard tunnel that talks to the RackNerd VPS so NPM can reach the right things inside the network. It’s not in the rack photo; it’s the mini PC that does “outside world ↔ lab” duty.
+
+**Prometheus** is the R740 in the rack: dual Xeon Gold 4110, 64 GB RAM, also Proxmox. This is where the heavy lifting lives. It runs the Cronarch site and this personal site, plus a couple of VMs. One of those is an Ubuntu Docker host (Portainer and any containers I don’t want in the Kubernetes cluster). The other is **Tartarus**, a TrueNAS VM that acts as the lab’s storage backbone.
+
+## Storage: Tartarus
+
+Tartarus lives on Prometheus and is the NAS for the whole lab. Right now it’s 7× 1.6 TB SAS 10k drives in RAIDZ2, so about 8 TB usable. The plan is to move that role to an LFF TrueNAS box later and keep Tartarus (or its successor) as the central place for NFS/iSCSI and general network storage.
+
+## Keeping it in shape
+
+The two Proxmox nodes are managed as a cluster. Updates run on a monthly cadence. Access is SSH-only, with keys from `github.com/cnbrown04.keys` and root login turned off. The only thing I’m careful about on the hardware side is making sure the R740’s HBA and disks are passed through correctly to Tartarus so the ZFS pool stays happy.
