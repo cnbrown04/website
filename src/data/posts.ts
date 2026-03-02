@@ -18,6 +18,6 @@ export const posts: PostMeta[] = [
 		date: "2025-02-21",
 		description:
 			"A consistently updated post on what im running, and how im running it.",
-		updated: "2025-02-21",
+		updated: "2025-03-02",
 	},
 ];
