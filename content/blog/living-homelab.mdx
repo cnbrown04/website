@@ -50,3 +50,9 @@ Tartarus lives on Prometheus and is the NAS for the whole lab. Right now it’s 
 ## Keeping it in shape
 
 The two Proxmox nodes are managed as a cluster. Updates run on a monthly cadence. Access is SSH-only, with keys from `github.com/cnbrown04.keys` and root login turned off. The only thing I’m careful about on the hardware side is making sure the R740’s HBA and disks are passed through correctly to Tartarus so the ZFS pool stays happy.
+
+## Future Plans
+
+- Swap R740 with SFF bays to the LFF version to use as the primary storage server.
+- New node using Epyc 7002 or 7003 as the new VM host. 
+- New 1u Ryzen server for high single core performance compute.
